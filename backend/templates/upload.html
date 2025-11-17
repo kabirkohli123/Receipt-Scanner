@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt Upload</title>
+</head>
+<body>
+
+<h2>Upload Receipt</h2>
+
+<!-- File Upload -->
+<input type="file" id="fileInput">
+
+<br><br>
+
+<!-- Camera Section -->
+<button onclick="openCamera()">Open Camera</button>
+<br><br>
+
+<video id="camera" width="300" height="300" autoplay style="display:none;"></video>
+<br>
+
+<button id="captureBtn" onclick="capture()" style="display:none;">Capture</button>
+
+<canvas id="canvas" width="300" height="300" style="display:none;"></canvas>
+
+<br><br>
+<button onclick="sendToServer()">Submit</button>
+
+<script>
+let imageBlob = null;
+
+function openCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        document.getElementById("camera").srcObject = stream;
+        document.getElementById("camera").style.display = "block";
+        document.getElementById("captureBtn").style.display = "inline-block";
+    })
+    .catch(err => {
+        alert("Camera access denied or not available");
+        console.log(err);
+    });
+}
+
+function capture() {
+    let video = document.getElementById("camera");
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob(blob => {
+        imageBlob = blob;
+    }, "image/jpeg");
+
+    alert("Image Captured!");
+}
+
+function sendToServer() {
+    let fileInput = document.getElementById("fileInput");
+    let file = fileInput.files[0] || imageBlob;
+
+    if (!file) {
+        alert("Please upload or capture an image first.");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("file", file, "captured.jpg");
+
+    fetch("/upload", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        alert("Uploaded Successfully!");
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Receipt Scanner Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f4f4;
+        }
+
+        .header {
+            background: #333;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .upload-btn {
+            background: #007bff;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        .raw-text {
+            max-height: 80px;
+            overflow-y: scroll;
+            font-size: 12px;
+            background: #eee;
+            padding: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        AI-Based Automated Receipt Scanner
+    </div>
+
+    <div class="container">
+        <a class="upload-btn" href="/upload-page">📤 Upload Receipt</a>
+
+        <table>
+            <tr>
+                <th>File Name</th>
+                <th>Vendor</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Raw Text</th>
+            </tr>
+
+            {% for r in receipts %}
+            <tr>
+                <td>{{ r.filename }}</td>
+                <td>{{ r.vendor }}</td>
+                <td>{{ r.date }}</td>
+                <td>{{ r.amount }}</td>
+                <td>{{ r.category }}</td>
+                <td><div class="raw-text">{{ r.raw_text }}</div></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
